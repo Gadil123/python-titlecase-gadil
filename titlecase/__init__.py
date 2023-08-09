@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 import os
 import string
 import sys
-# test
+
 try:
     import regex
 except ImportError:
@@ -77,7 +77,7 @@ def set_small_word_list(small=SMALL):
     SUBPHRASE = regex.compile(r'([:.;?!][ ])(%s)' % small)
 
 
-def titlecase(text, callback=None, small_first_last=True, preserve_blank_lines=False):
+def titlecase(text, callback=None, small_first_last=True, preserve_blank_lines=False, abbre_list=[]):
     """
     :param text: Titlecases input text
     :param callback: Callback function that returns the titlecase version of a specific word
@@ -103,6 +103,12 @@ def titlecase(text, callback=None, small_first_last=True, preserve_blank_lines=F
         words = regex.split('[\t ]', line)
         tc_line = []
         for word in words:
+            # 手工加入接受指定abbre_list的代码
+            if word.upper() in abbre_list:
+                new_word = word.upper()
+                if new_word:
+                    tc_line.append(_mark_immutable(new_word))
+                    continue
             if callback:
                 new_word = callback(word, all_caps=all_caps)
                 if new_word:
